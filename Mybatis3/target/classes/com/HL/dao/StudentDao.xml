@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--指定约束文件-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--sql映射文件，写sql语句的，mybatis会自己执行这些sql-->
+<!--命名空间-->
+<mapper namespace="com.HL.dao.StudentDao">
+    <!--select表示查询，id为执行sql语句的唯一标识，可自定义，建议为dao接口的方法名-->
+    <!--resultType表示结果类型的，是sql语句执行后得到的ResultSet，遍历这个ResultSet得到的java对象类型，值写的是类型的全限定名称-->
+    <select id="selectStudent" resultType="com.HL.entity.Student">
+    select id,name,email,age from student
+  </select>
+    <insert id="insertStudent">
+        insert into student values (#{id},#{name},#{email},#{age})
+    </insert>
+    <select id="selectStudentById"  parameterType="java.lang.Integer" resultType="com.HL.entity.Student">
+        select id,name,email,age from student where id = #{id}
+    </select>
+    <select id="selectMultiParam" resultType="com.HL.entity.Student">
+        select id,name,email,age from student where name = #{myname} or age = #{myage}
+    </select>
+    <select id=" SelectUser$order" resultType="com.HL.entity.Student">
+        select * from  student order by ${colName}
+    </select>
+    <select id="SelectIf" resultType="com.HL.entity.Student">
+        select * from student where
+        <if test="name!=null and name!=''">
+            name = #{name}
+        </if>
+        <if test="age>0">
+            or age > #{age}
+        </if>
+    </select>
+    <select id="SelectWhere" resultType="com.HL.entity.Student">
+        select * from student
+        <where>
+            <if test="name!=null and name!=''">
+                name = #{name}
+            </if>
+            <if test="age>0">
+                or age > #{age}
+            </if>
+        </where>
+    </select>
+    <select id="SelectForeach" resultType="com.HL.entity.Student">
+        select * from student where id in
+--         collection表示接口中方法的方法参数类型，数组用array，list就用list
+--         item是自定义的，表示数组和集合成员的变量
+--         open表示集合的开始的字符
+--         close表示集合的结束的字符
+--         separator表示集合成员的分隔符
+        <foreach collection="list"  item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="SelectForeach2" resultType="com.HL.entity.Student">
+        select * from student where id in 
+        <foreach collection="list" item="stu" open="(" close=")" separator=",">
+            #{stu.id}
+        </foreach>
+    </select>
+
+
+
+
+</mapper>
